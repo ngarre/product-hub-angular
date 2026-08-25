@@ -1,5 +1,7 @@
 <h1>Product Hub</h1>
 
 <router-outlet></router-outlet>
-<app-producto [producto]="productoSeleccionado" (eliminado)="eliminarProducto($event)"> <!-- $event contains what the child emitted -->
-</app-producto>
+
+@for (producto of productos; track producto.id){
+    <app-producto [producto]="producto" (eliminado)="eliminarProducto($event)"></app-producto> <!-- $event contains what the child emitted -->
+}
