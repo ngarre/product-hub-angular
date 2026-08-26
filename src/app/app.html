@@ -2,6 +2,18 @@
 
 <router-outlet></router-outlet>
 
-@for (producto of productos(); track producto.id){
-    <app-producto [producto]="producto" (eliminado)="eliminarProducto($event)"></app-producto> <!-- $event contains what the child emitted -->
+@if (numeroProductos() > 0) {
+    <p>Productos disponibles: {{ numeroProductos() }}</p>
+} @else {
+    <p>No hay productos disponibles</p>
 }
+
+<button (click)="restablecerProductos()">Restablecer productos</button>
+
+@for (producto of productos(); track producto.id){
+<app-producto
+    [producto]="producto" 
+    (eliminado)="eliminarProducto($event)"> <!-- $event contains what the child emitted -->
+</app-producto>
+}
+
