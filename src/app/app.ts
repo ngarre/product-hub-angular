@@ -1,7 +1,7 @@
-import { Component, computed, signal } from '@angular/core';
+import { Component, signal, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Producto } from './producto/producto'; // Here we make TS recognise the symbol "Product"
-import { ProductoModel } from './models/producto.model';
+import { ProductoService } from './services/producto.service';
 
 @Component({
   selector: 'app-root',
@@ -13,35 +13,21 @@ import { ProductoModel } from './models/producto.model';
 export class App {
   protected readonly title = signal('product-hub-angular');
 
-  productoSeleccionado: ProductoModel = {
-    id: 1,
-    nombre: 'Microscopio',
-    precio: 350
-  };
+  // The next line asks Angular to provide us a new instance of ProductoService,
+  // it is readonly because App will always preserve the same reference to the service --> we won't do "this.productoService = anotherService"
+  private readonly productoService = inject(ProductoService);
 
-  // With signal "productos" doesn't contain directly the array --> now it has a reactive container which contains the array
-  // With readonly we will not reassign the value of the signal, but we can update its content (the array)
-  readonly productos = signal<ProductoModel[]>([
-    { id: 2, nombre: 'Centrífuga', precio: 2000 },
-    { id: 3, nombre: 'Espectrofotómetro', precio: 3500 },
-    { id: 4, nombre: 'Pipeta', precio: 200 },
-  ]);
-
-  // property numeroProductos is readonly because it can't be reassigned to another signal --> computed internally uses ComputedSignal<number>
-  readonly numeroProductos = computed(() => this.productos().length);
+  // With the next two lines we point to the signals that live in ProductoService (same reference) --> in app.html we can continue using "productos()" and "numeroProductos()"
+  readonly productos = this.productoService.productos;
+  readonly numeroProductos = this.productoService.numeroProductos;
+ 
 
   eliminarProducto(id: number): void {
-    // console.log('Producto a eliminar: ', id);
-    // Updating array of products with those ones which button hasn't been clicked
-    this.productos.update(productos => productos.filter(producto => producto.id !== id));
-    // We access the array containing the "products" signal using the "update" method
+    this.productoService.eliminarProducto(id);
   }
 
-  restablecerProductos(): void {
-    this.productos.set([
-      { id: 2, nombre: 'Centrífuga', precio: 2000 },
-      { id: 3, nombre: 'Espectrofotómetro', precio: 3500 },
-      { id: 4, nombre: 'Pipeta', precio: 200 },
-    ]);
+  restablecerProductos(): void{
+    this.productoService.restablecerProductos();
   }
+  
 }
