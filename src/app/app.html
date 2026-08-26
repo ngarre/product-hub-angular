@@ -2,6 +2,6 @@
 
 <router-outlet></router-outlet>
 
-@for (producto of productos; track producto.id){
+@for (producto of productos(); track producto.id){
     <app-producto [producto]="producto" (eliminado)="eliminarProducto($event)"></app-producto> <!-- $event contains what the child emitted -->
 }

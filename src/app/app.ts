@@ -19,16 +19,20 @@ export class App {
     precio: 350
   };
 
-  productos: ProductoModel[] = [
+  // With signal "productos" doesn't contain directly the array --> now it has a reactive container which contains the array
+  // With readonly we will not reassign the value of the signal, but we can update its content (the array)
+  readonly productos = signal<ProductoModel[]>([ 
     { id: 2, nombre: 'Centrífuga', precio: 2000 },
     { id: 3, nombre: 'Espectrofotómetro', precio: 3500 },
     { id: 4, nombre: 'Pipeta', precio: 200 },
-  ];
+  ]);
 
 
 
   eliminarProducto(id: number): void {
     // console.log('Producto a eliminar: ', id);
-    this.productos = this.productos.filter(producto => producto.id !== id); // Updating array of products with those ones which button hasn't been clicked
+    // Updating array of products with those ones which button hasn't been clicked
+    this.productos.update(productos => productos.filter(producto => producto.id !== id)); 
+    // We access the array containing the "products" signal using the "update" method
   }
 }
