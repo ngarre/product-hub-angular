@@ -1,16 +1,20 @@
+<form 
+[formGroup]="formularioProducto"
+(ngSubmit)="agregarProducto()">
 <label for="campo-nombre">Nombre:</label> <!-- "campo-nombre" is HTML and says to label: this text belongs to the element whose id is "campo-nombre"-->
 <input
     id="campo-nombre"
     type="text"
-    [formControl]="nombreProducto">
+    formControlName="nombre">
 
-<p>Valor actual: {{ nombreProducto.value }}</p>
 
 <label for="campo-precio">Precio:</label>
 <input
     id="campo-precio"
     type="number"
-    [formControl]="precioProducto"
->
+    formControlName="precio">
+<button type="submit">Añadir producto</button>
+</form>
 
-<p>Valor actual: {{ precioProducto.value }}</p>
+<p>Nombre: {{ formularioProducto.value.nombre }}</p>
+<p>Precio: {{ formularioProducto.value.precio }}</p>
