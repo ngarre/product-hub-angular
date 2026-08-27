@@ -1,25 +1,7 @@
 <h1>Product Hub</h1>
 
-<router-outlet></router-outlet>
+<router-outlet></router-outlet> <!-- allow us have an SPA: shows different components depending on the URL -->
 
-@if (numeroProductos() > 0) {
-    <p>Productos disponibles: {{ numeroProductos() }}</p>
-} @else {
-    <p>No hay productos disponibles</p>
-}
-
-<button (click)="restablecerProductos()">Restablecer productos</button>
-
-@for (producto of productos(); track producto.id){
-<app-producto
-    [producto]="producto" 
-    (eliminado)="eliminarProducto($event)"> <!-- $event contains what the child emitted -->
-</app-producto>
-}
-<br>
-<br>
-<br>
-<br>
 <app-formulario-producto></app-formulario-producto>
 
 
