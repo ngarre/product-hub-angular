@@ -22,29 +22,35 @@ export class FormularioProducto {
       nonNullable: true,
       validators: [Validators.required]
     }),
-    precio: new FormControl(0, { 
+    precio: new FormControl(0, {
       nonNullable: true,
       validators: [
         Validators.required,
         Validators.min(0.01)
       ],
-     })
+    })
   })
 
   agregarProducto(): void {
+
+    // making the code more robust so it doesn't rely solely on the disabled submit button
+    if (this.formularioProducto.invalid) {
+      return;
+    }
+
     // getRawValue() guarantees all form controls are included (without it TS thinks a disabled control could return undefined).
     // With nonNullable controls, nombre is string and precio is number.
 
     const valores = this.formularioProducto.getRawValue();
 
-    // Or with destructuring:
-    // const { nombre, precio } = this.formularioProducto.getRawValue();
-    // this.productoService.agregarProducto(nombre, precio);
-
     this.productoService.agregarProducto(
       valores.nombre,
       valores.precio
     );
+
+    // Or with destructuring:
+    // const { nombre, precio } = this.formularioProducto.getRawValue();
+    // this.productoService.agregarProducto(nombre, precio);
 
     this.formularioProducto.reset(); // Cleans the form resetting it to its default values
   }
