@@ -1,0 +1,16 @@
+<label for="campo-nombre">Nombre:</label> <!-- "campo-nombre" is HTML and says to label: this text belongs to the element whose id is "campo-nombre"-->
+<input
+    id="campo-nombre"
+    type="text"
+    [formControl]="nombreProducto">
+
+<p>Valor actual: {{ nombreProducto.value }}</p>
+
+<label for="campo-precio">Precio:</label>
+<input
+    id="campo-precio"
+    type="number"
+    [formControl]="precioProducto"
+>
+
+<p>Valor actual: {{ precioProducto.value }}</p>
