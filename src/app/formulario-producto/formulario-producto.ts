@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ProductoService } from '../services/producto.service';
 
 @Component({
@@ -18,8 +18,17 @@ export class FormularioProducto {
 
   // Independent controls become part of the same object FormGroup:
   formularioProducto = new FormGroup({
-    nombre: new FormControl('', { nonNullable: true }),
-    precio: new FormControl(0, { nonNullable: true })
+    nombre: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required]
+    }),
+    precio: new FormControl(0, { 
+      nonNullable: true,
+      validators: [
+        Validators.required,
+        Validators.min(0.01)
+      ],
+     })
   })
 
   agregarProducto(): void {
@@ -36,5 +45,7 @@ export class FormularioProducto {
       valores.nombre,
       valores.precio
     );
+
+    this.formularioProducto.reset(); // Cleans the form resetting it to its default values
   }
 }

@@ -1,20 +1,33 @@
-<form 
-[formGroup]="formularioProducto"
-(ngSubmit)="agregarProducto()">
-<label for="campo-nombre">Nombre:</label> <!-- "campo-nombre" is HTML and says to label: this text belongs to the element whose id is "campo-nombre"-->
-<input
-    id="campo-nombre"
-    type="text"
-    formControlName="nombre">
+<form [formGroup]="formularioProducto" (ngSubmit)="agregarProducto()">
+    <label for="campo-nombre">Nombre:</label>
+    <!-- "campo-nombre" is HTML and says to label: this text belongs to the element whose id is "campo-nombre"-->
+    <input id="campo-nombre" type="text" formControlName="nombre">
 
 
-<label for="campo-precio">Precio:</label>
-<input
-    id="campo-precio"
-    type="number"
-    formControlName="precio">
-<button type="submit">Añadir producto</button>
+    <label for="campo-precio">Precio:</label>
+    <input id="campo-precio" type="number" formControlName="precio">
+    <button type="submit" [disabled]="formularioProducto.invalid">
+        Añadir producto
+    </button>
 </form>
 
-<p>Nombre: {{ formularioProducto.value.nombre }}</p>
-<p>Precio: {{ formularioProducto.value.precio }}</p>
+<!-- User has interacted with the field nombre -->
+<!-- The field keeps the required error -->
+@if (
+    formularioProducto.controls.nombre.touched && 
+    formularioProducto.controls.nombre.hasError('required') 
+) {
+    <p> El nombre es obligatorio </p>
+}
+
+@if (formularioProducto.controls.precio.touched) {
+    @if (formularioProducto.controls.precio.hasError('required')) {
+        <p>El precio es obligatorio</p>
+    }
+
+    @if (formularioProducto.controls.precio.hasError('min')) {
+    <p>El precio debe ser mayor que cero</p>
+    }
+}
+
+<p>¿Formulario inválido? {{ formularioProducto.invalid }}</p>
