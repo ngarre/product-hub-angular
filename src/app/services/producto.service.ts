@@ -6,6 +6,8 @@ import { ProductoModel } from '../models/producto.model';
 })
 export class ProductoService {
 
+  private siguienteId = 5;
+
   // It is private because only ProductoService needs to know this initial list
   private readonly productosIniciales: ProductoModel[] = [
     { id: 2, nombre: 'Centrífuga', precio: 2000 },
@@ -27,6 +29,20 @@ export class ProductoService {
     // Updating array of products with those ones which button hasn't been clicked
     this.productos.update(productos => productos.filter(producto => producto.id !== id));
     // We access the array containing the "products" signal using the "update" method
+  }
+
+  agregarProducto(nombre: string, precio: number): void {
+    const nuevoId: number = this.siguienteId;
+    // When property and variable have the same name we don't need to write the 
+    // extended form: "{ id: this.siguienteId, nombre: nombre, precio: precio }"
+    const nuevoProducto: ProductoModel = { id: nuevoId, nombre, precio }; 
+
+    this.siguienteId++;
+
+    this.productos.update(productos =>
+      [...productos,
+        nuevoProducto]
+    )
   }
 
   restablecerProductos(): void {

@@ -2,10 +2,11 @@ import { Component, signal, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Producto } from './producto/producto'; // Here we make TS recognise the symbol "Product"
 import { ProductoService } from './services/producto.service';
+import { FormularioProducto } from './formulario-producto/formulario-producto';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Producto], // making Angular can use product component in the app template
+  imports: [RouterOutlet, Producto, FormularioProducto], // making Angular can use product component in the app template
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
