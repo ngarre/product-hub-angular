@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { ListaProductos } from './lista-productos/lista-productos';
 import { FormularioProducto } from './formulario-producto/formulario-producto';
 import { DetalleProducto } from './detalle-producto/detalle-producto';
+import { PaginaNoEncontrada } from './pagina-no-encontrada/pagina-no-encontrada';
 
 export const routes: Routes = [
     {
@@ -23,6 +24,7 @@ export const routes: Routes = [
     },
     {
         path: '**', // For any path which doesn't match with any of the previous ones --> this code must be at the end of the list of routes
-        redirectTo: 'productos'
+        // redirectTo: 'productos'
+        component: PaginaNoEncontrada // In this way, the user can see which route doesn't exist
     }
 ];
