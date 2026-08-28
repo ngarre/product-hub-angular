@@ -1,0 +1,10 @@
+<h2>Detalle del producto</h2>
+
+@if (producto){
+    <p>{{ producto.nombre }} - {{ producto.precio }}€</p>
+} @else {
+    <p>Producto no encontrado</p>
+}
+
+<br>
+<a routerLink="/productos">Volver a productos</a>

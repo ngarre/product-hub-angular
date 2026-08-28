@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { ListaProductos } from './lista-productos/lista-productos';
 import { FormularioProducto } from './formulario-producto/formulario-producto';
+import { DetalleProducto } from './detalle-producto/detalle-producto';
 
 export const routes: Routes = [
     {
@@ -15,6 +16,10 @@ export const routes: Routes = [
     {
         path: 'nuevo-producto',
         component: FormularioProducto
+    },
+    {
+        path: 'productos/:id',
+        component: DetalleProducto
     },
     {
         path: '**', // For any path which doesn't match with any of the previous ones --> this code must be at the end of the list of routes
