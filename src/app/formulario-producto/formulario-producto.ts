@@ -1,6 +1,8 @@
 import { Component, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ProductoService } from '../services/producto.service';
+import { Router } from '@angular/router';
+
 
 @Component({
   selector: 'app-formulario-producto',
@@ -12,6 +14,7 @@ import { ProductoService } from '../services/producto.service';
 export class FormularioProducto {
 
   private readonly productoService = inject(ProductoService);
+  private readonly route = inject(Router);
 
   // nombreProducto = new FormControl('');
   // precioProducto = new FormControl(0); // it creates control with initial value in 0
@@ -53,5 +56,7 @@ export class FormularioProducto {
     // this.productoService.agregarProducto(nombre, precio);
 
     this.formularioProducto.reset(); // Cleans the form resetting it to its default values
+
+    this.route.navigate(['/productos']);
   }
 }

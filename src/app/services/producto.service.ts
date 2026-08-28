@@ -35,7 +35,7 @@ export class ProductoService {
     const nuevoId: number = this.siguienteId;
     // When property and variable have the same name we don't need to write the 
     // extended form: "{ id: this.siguienteId, nombre: nombre, precio: precio }"
-    const nuevoProducto: ProductoModel = { id: nuevoId, nombre, precio }; 
+    const nuevoProducto: ProductoModel = { id: nuevoId, nombre, precio };
 
     this.siguienteId++;
 
@@ -49,5 +49,9 @@ export class ProductoService {
     this.productos.set([
       ...this.productosIniciales
     ]);
+  }
+
+  buscarProductoPorId(id: number): ProductoModel | undefined {
+    return this.productos().find(producto => producto.id === id);
   }
 }
