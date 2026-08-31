@@ -17,11 +17,19 @@ export class ListaProductos {
   readonly productos = this.productoService.productos;
   readonly numeroProductos = this.productoService.numeroProductos;
 
-   eliminarProducto(id: number): void {
+  // The next two lines allow the template to know the values of "cargando" and "errorCarga"
+  readonly cargando = this.productoService.cargando;
+  readonly errorCarga = this.productoService.errorCarga;
+
+  eliminarProducto(id: number): void {
     this.productoService.eliminarProducto(id);
   }
 
-  restablecerProductos(): void{
+  restablecerProductos(): void {
     this.productoService.restablecerProductos();
+  }
+
+  cargarDesdeApi(): void {
+    this.productoService.cargarProductosApi();
   }
 }

@@ -1,10 +1,21 @@
-import { computed, Injectable, signal } from '@angular/core';
+import { computed, Injectable, signal, inject } from '@angular/core';
 import { ProductoModel } from '../models/producto.model';
+import { HttpClient } from '@angular/common/http';
+
+interface ProductoApi {
+  id: number;
+  title: string;
+  price: number;
+}
 
 @Injectable({ // Inyectable says Angular this class can participate in its inyecting dependency system
   providedIn: 'root', // Allows Angular to provide a shared instance of the service in all the application
 })
 export class ProductoService {
+
+  private readonly http = inject(HttpClient);
+  readonly cargando = signal(false); // TS can infer the type from the initial value, so I don't need to write <boolean>
+  readonly errorCarga = signal<string | null>(null)
 
   private siguienteId = 5;
 
@@ -23,6 +34,36 @@ export class ProductoService {
 
   // property numeroProductos is readonly because it can't be reassigned to another signal --> computed internally uses ComputedSignal<number>
   readonly numeroProductos = computed(() => this.productos().length);
+
+
+  cargarProductosApi(): void {
+    this.cargando.set(true);
+    this.errorCarga.set(null); // To clean any old errors
+    const peticion = this.http.get<ProductoApi[]>('https://fakestoreapi.com/products'); // "peticion" isn't an array: it is an "Observable<ProductoApi[]"
+
+    console.log('Observable:', peticion);
+
+    peticion.subscribe({
+      next: productosApi => { // "productosApi" is the array emitted by the Observable when the response arrives
+        const productosConvertidos: ProductoModel[] = productosApi.map((productoApi: ProductoApi) => {
+          return {
+            id: productoApi.id,
+            nombre: productoApi.title,
+            precio: productoApi.price
+          };
+        });
+        console.log('Productos convertidos:', productosConvertidos);
+        this.productos.set(productosConvertidos); // Updates the signal "productos"
+        this.cargando.set(false);
+      },
+
+      error: error => {
+        console.error('Error al cargar productos:', error);
+        this.errorCarga.set('No se pudieron cargar los productos');
+        this.cargando.set(false);
+      }
+    });
+  }
 
   eliminarProducto(id: number): void {
     // console.log('Producto a eliminar: ', id);
