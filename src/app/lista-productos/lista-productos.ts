@@ -51,4 +51,23 @@ export class ListaProductos {
         }
       });
   }
+
+  // ****** Testing BehaviourSubject ****************************
+  constructor() {
+    this.productoService.estado$.subscribe(estado => {
+      console.log('Suscriptor 1:', estado);
+    });
+
+    this.productoService.cambiarEstado('Estado actualizado');
+
+    this.productoService.estado$.subscribe(estado => {
+      console.log('Suscriptor 2:', estado);
+    });
+  }
+
+  // The second subscriber was not present when the 
+  // "Estado actualizado" message was emitted, but still
+  // receives it immediately upon subscribing because 
+  // BehaviorSubject retains the latest value
+  // *************************************************************
 }
