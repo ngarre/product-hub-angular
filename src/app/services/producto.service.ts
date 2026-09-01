@@ -1,6 +1,7 @@
 import { computed, Injectable, signal, inject } from '@angular/core';
 import { ProductoModel } from '../models/producto.model';
 import { HttpClient } from '@angular/common/http';
+import { finalize, map } from 'rxjs';
 
 interface ProductoApi {
   id: number;
@@ -43,26 +44,29 @@ export class ProductoService {
 
     console.log('Observable:', peticion);
 
-    peticion.subscribe({
-      next: productosApi => { // "productosApi" is the array emitted by the Observable when the response arrives
-        const productosConvertidos: ProductoModel[] = productosApi.map((productoApi: ProductoApi) => {
+    peticion.pipe(
+      finalize(() => {
+        this.cargando.set(false);
+      }),
+      map((productosApi: ProductoApi[]): ProductoModel[] => { // "productosApi" is the array emitted by the Observable when the response arrives
+        return productosApi.map((productoApi: ProductoApi) => {
           return {
             id: productoApi.id,
             nombre: productoApi.title,
             precio: productoApi.price
           };
         });
-        console.log('Productos convertidos:', productosConvertidos);
-        this.productos.set(productosConvertidos); // Updates the signal "productos"
-        this.cargando.set(false);
-      },
+      }))
+      .subscribe({
+        next: productosConvertidos => {
+          this.productos.set(productosConvertidos); // Updates the signal "productos"
+        },
 
-      error: error => {
-        console.error('Error al cargar productos:', error);
-        this.errorCarga.set('No se pudieron cargar los productos');
-        this.cargando.set(false);
-      }
-    });
+        error: error => {
+          console.error('Error al cargar productos:', error);
+          this.errorCarga.set('No se pudieron cargar los productos');
+        }
+      });
   }
 
   eliminarProducto(id: number): void {
