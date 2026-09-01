@@ -1,7 +1,7 @@
 import { computed, Injectable, signal, inject } from '@angular/core';
 import { ProductoModel } from '../models/producto.model';
 import { HttpClient } from '@angular/common/http';
-import { finalize, map } from 'rxjs';
+import { Observable, map } from 'rxjs';
 
 interface ProductoApi {
   id: number;
@@ -15,8 +15,6 @@ interface ProductoApi {
 export class ProductoService {
 
   private readonly http = inject(HttpClient);
-  readonly cargando = signal(false); // TS can infer the type from the initial value, so I don't need to write <boolean>
-  readonly errorCarga = signal<string | null>(null)
 
   private siguienteId = 5;
 
@@ -37,36 +35,18 @@ export class ProductoService {
   readonly numeroProductos = computed(() => this.productos().length);
 
 
-  cargarProductosApi(): void {
-    this.cargando.set(true);
-    this.errorCarga.set(null); // To clean any old errors
-    const peticion = this.http.get<ProductoApi[]>('https://fakestoreapi.com/products'); // "peticion" isn't an array: it is an "Observable<ProductoApi[]"
-
-    console.log('Observable:', peticion);
-
-    peticion.pipe(
-      finalize(() => {
-        this.cargando.set(false);
-      }),
-      map((productosApi: ProductoApi[]): ProductoModel[] => { // "productosApi" is the array emitted by the Observable when the response arrives
-        return productosApi.map((productoApi: ProductoApi) => {
-          return {
-            id: productoApi.id,
-            nombre: productoApi.title,
-            precio: productoApi.price
-          };
-        });
-      }))
-      .subscribe({
-        next: productosConvertidos => {
-          this.productos.set(productosConvertidos); // Updates the signal "productos"
-        },
-
-        error: error => {
-          console.error('Error al cargar productos:', error);
-          this.errorCarga.set('No se pudieron cargar los productos');
-        }
-      });
+  cargarProductosApi(): Observable<ProductoModel[]> {
+    return this.http.get<ProductoApi[]>('https://fakestoreapi.com/products') // "peticion" isn't an array: it is an "Observable<ProductoApi[]"
+      .pipe(
+        map((productosApi: ProductoApi[]): ProductoModel[] => { // "productosApi" is the array emitted by the Observable when the response arrives
+          return productosApi.map((productoApi: ProductoApi) => {
+            return {
+              id: productoApi.id,
+              nombre: productoApi.title,
+              precio: productoApi.price
+            };
+          });
+        }))
   }
 
   eliminarProducto(id: number): void {
@@ -98,5 +78,9 @@ export class ProductoService {
 
   buscarProductoPorId(id: number): ProductoModel | undefined {
     return this.productos().find(producto => producto.id === id);
+  }
+
+  actualizarProductos(productos: ProductoModel[]): void {
+    this.productos.set(productos); // Updates the signal "productos"
   }
 }
