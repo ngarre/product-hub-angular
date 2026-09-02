@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { ProductoService } from '../services/producto.service';
 import { Producto } from '../producto/producto'; // Here we make TS recognise the symbol "Product"
 import { finalize } from 'rxjs';
@@ -9,7 +9,13 @@ import { finalize } from 'rxjs';
   templateUrl: './lista-productos.html',
   styleUrl: './lista-productos.css',
 })
-export class ListaProductos {
+export class ListaProductos implements OnInit {
+
+  // ngOnInit is a lifecycle method that Angular calls when it initializes the component.
+  // Implementing OnInit helps TS verify that we are correctly implementing that contract.
+  ngOnInit(): void { 
+    this.cargarDesdeApi();
+  }
 
   readonly cargando = signal(false); // TS can infer the type from the initial value, so I don't need to write <boolean>
   readonly errorCarga = signal<string | null>(null)
