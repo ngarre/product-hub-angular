@@ -84,21 +84,4 @@ export class ProductoService {
   actualizarProductos(productos: ProductoModel[]): void {
     this.productos.set(productos); // Updates the signal "productos"
   }
-
-
-  // ****** Testing BehaviourSubject ******
-  private readonly estadoSubject = new BehaviorSubject<string>('Estado inicial'); // Can emit new values with .next() and keeps the latest value
-  // "$" --> standard convention to indicate "this is an Observable"
-  readonly estado$ = this.estadoSubject.asObservable(); // // Exposes the BehaviorSubject as a read-only Observable so other classes can subscribe but cannot call .next()
-
-  cambiarEstado(nuevoEstado: string): void {
-    this.estadoSubject.next(nuevoEstado);
-  }
-
-  // Comparison with Signal:
-  // with Signal          --> this.cargando.set(true);
-  // with BehaviorSubject --> this.estadoSubject.next('nuevo valor');
-  // Both can represent state, but have different APIs
-
-  // **************************************
 }
