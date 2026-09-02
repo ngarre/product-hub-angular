@@ -50,6 +50,25 @@ export class ProductoService {
         }))
   }
 
+  crearProductoApi(nombre: string, precio: number): Observable<ProductoModel> {
+    const productoParaApi = {
+      title: nombre,
+      price: precio
+    };
+
+    return this.http.post<ProductoApi>( // <ProductoApi> indicates the data type we expect to receive in the HTTP response, not the type we are sending
+      'https://fakestoreapi.com/products', productoParaApi)
+      .pipe(
+        map((productoApi: ProductoApi): ProductoModel => {
+          return {
+            id: productoApi.id,
+            nombre: productoApi.title,
+            precio: productoApi.price
+          }
+        })
+      );
+  }
+
   eliminarProducto(id: number): void {
     // console.log('Producto a eliminar: ', id);
     // Updating array of products with those ones which button hasn't been clicked
