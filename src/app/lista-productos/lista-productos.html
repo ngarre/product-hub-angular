@@ -1,5 +1,13 @@
 <h2>Lista de Productos</h2>
 
+@if (cargando()){
+    <p>Cargando productos...</p>
+}
+
+@if (errorCarga() !== null){
+    <p> {{ errorCarga() }} </p>
+}
+
 @if (numeroProductos() > 0) {
     <p>Productos disponibles: {{ numeroProductos() }}</p>
 } @else {
@@ -14,3 +22,4 @@
     (eliminado)="eliminarProducto($event)"> <!-- $event contains what the child emitted -->
 </app-producto>
 }
+

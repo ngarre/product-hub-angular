@@ -1,10 +1,21 @@
-import { computed, Injectable, signal } from '@angular/core';
+import { computed, Injectable, signal, inject } from '@angular/core';
 import { ProductoModel } from '../models/producto.model';
+import { HttpClient } from '@angular/common/http';
+import { Observable, map } from 'rxjs';
+import { BehaviorSubject } from 'rxjs'; // Testing BehaviorSubject vs. signal
+
+interface ProductoApi {
+  id: number;
+  title: string;
+  price: number;
+}
 
 @Injectable({ // Inyectable says Angular this class can participate in its inyecting dependency system
   providedIn: 'root', // Allows Angular to provide a shared instance of the service in all the application
 })
 export class ProductoService {
+
+  private readonly http = inject(HttpClient);
 
   private siguienteId = 5;
 
@@ -23,6 +34,21 @@ export class ProductoService {
 
   // property numeroProductos is readonly because it can't be reassigned to another signal --> computed internally uses ComputedSignal<number>
   readonly numeroProductos = computed(() => this.productos().length);
+
+
+  cargarProductosApi(): Observable<ProductoModel[]> {
+    return this.http.get<ProductoApi[]>('https://fakestoreapi.com/products') // "peticion" isn't an array: it is an "Observable<ProductoApi[]"
+      .pipe(
+        map((productosApi: ProductoApi[]): ProductoModel[] => { // "productosApi" is the array emitted by the Observable when the response arrives
+          return productosApi.map((productoApi: ProductoApi) => {
+            return {
+              id: productoApi.id,
+              nombre: productoApi.title,
+              precio: productoApi.price
+            };
+          });
+        }))
+  }
 
   eliminarProducto(id: number): void {
     // console.log('Producto a eliminar: ', id);
@@ -53,5 +79,9 @@ export class ProductoService {
 
   buscarProductoPorId(id: number): ProductoModel | undefined {
     return this.productos().find(producto => producto.id === id);
+  }
+
+  actualizarProductos(productos: ProductoModel[]): void {
+    this.productos.set(productos); // Updates the signal "productos"
   }
 }
