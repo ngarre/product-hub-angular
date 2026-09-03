@@ -75,6 +75,10 @@ export class ProductoService {
     // We access the array containing the "products" signal using the "update" method
   }
 
+  eliminarProductoApi(id: number): Observable<void> {
+    return this.http.delete<void>(`https://fakestoreapi.com/products/${id}`);
+  }
+
   agregarProducto(nombre: string, precio: number): void {
     const nuevoId: number = this.siguienteId;
     // When property and variable have the same name we don't need to write the 
