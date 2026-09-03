@@ -6,10 +6,18 @@
 
     <label for="campo-precio">Precio:</label>
     <input id="campo-precio" type="number" formControlName="precio">
-    <button type="submit" [disabled]="formularioProducto.invalid">
+    <button type="submit" [disabled]="formularioProducto.invalid || creando()">
         Añadir producto
     </button>
 </form>
+
+@if(creando()) {
+    <p>Creando producto...</p>
+}
+
+@if(errorCrear() !== null) {
+    <p>{{ errorCrear() }}</p>
+}
 
 <!-- User has interacted with the field nombre -->
 <!-- The field keeps the required error -->

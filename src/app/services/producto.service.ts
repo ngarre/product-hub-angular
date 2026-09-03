@@ -2,7 +2,6 @@ import { computed, Injectable, signal, inject } from '@angular/core';
 import { ProductoModel } from '../models/producto.model';
 import { HttpClient } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
-import { BehaviorSubject } from 'rxjs'; // Testing BehaviorSubject vs. signal
 
 interface ProductoApi {
   id: number;
