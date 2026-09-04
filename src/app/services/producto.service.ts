@@ -49,6 +49,19 @@ export class ProductoService {
         }))
   }
 
+  obtenerProductoApiPorId(id: number): Observable<ProductoModel> {
+    return this.http.get<ProductoApi>(`https://fakestoreapi.com/products/${id}`)
+      .pipe(
+        map((productoApi: ProductoApi): ProductoModel => {
+          return {
+            id: productoApi.id,
+            nombre: productoApi.title,
+            precio: productoApi.price
+          };
+        })
+      );
+  }
+
   crearProductoApi(nombre: string, precio: number): Observable<ProductoModel> {
     const productoParaApi = {
       title: nombre,
@@ -68,15 +81,33 @@ export class ProductoService {
       );
   }
 
+  actualizarProductoApi(id: number, nombre: string, precio: number): Observable<ProductoModel> {
+    const productoParaApi = {
+      title: nombre,
+      price: precio
+    };
+
+    return this.http.put<ProductoApi>(`https://fakestoreapi.com/products/${id}`, productoParaApi)
+      .pipe(
+        map((productoApi: ProductoApi): ProductoModel => {
+          return {
+            id: productoApi.id,
+            nombre: productoApi.title,
+            precio: productoApi.price
+          }
+        }
+        )
+      );
+  }
+
+
+  // METHODS FOR THE LOCAL STATE:
+
   eliminarProducto(id: number): void {
     // console.log('Producto a eliminar: ', id);
     // Updating array of products with those ones which button hasn't been clicked
     this.productos.update(productos => productos.filter(producto => producto.id !== id));
     // We access the array containing the "products" signal using the "update" method
-  }
-
-  eliminarProductoApi(id: number): Observable<void> {
-    return this.http.delete<void>(`https://fakestoreapi.com/products/${id}`);
   }
 
   agregarProducto(nombre: string, precio: number): void {
@@ -91,6 +122,10 @@ export class ProductoService {
       [...productos,
         nuevoProducto]
     )
+  }
+
+  eliminarProductoApi(id: number): Observable<void> {
+    return this.http.delete<void>(`https://fakestoreapi.com/products/${id}`);
   }
 
   restablecerProductos(): void {
