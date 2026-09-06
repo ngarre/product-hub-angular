@@ -26,6 +26,7 @@ export class EdicionProducto implements OnInit {
 
   private idProducto: number | null = null;
 
+  // The next two properties aren't private becaouse they are needed in the HTML template.
   readonly actualizandoProducto = signal(false);
   readonly errorActualizacion = signal<string | null>(null);
 
@@ -56,6 +57,16 @@ export class EdicionProducto implements OnInit {
     }
 
     const idNumerico = Number(id);
+
+    // The function isInteger returns "false" if the result of the conversion is NaN, so we
+    // don't have to check specifically if "idNumerico" is a NaN
+    if (!Number.isInteger(idNumerico) || idNumerico <= 0) {
+      this.errorRecuperacion.set('El id del producto no es válido');
+      this.recuperandoProducto.set(false);
+      return;
+    }
+
+
     this.idProducto = idNumerico;
 
     const peticion = this.productoService.obtenerProductoApiPorId(idNumerico);
@@ -86,7 +97,7 @@ export class EdicionProducto implements OnInit {
     this.errorActualizacion.set(null);
 
     if (this.formularioEdicion.invalid) {
-      this.errorActualizacion.set('Revisa los datos del formulario'); 
+      this.errorActualizacion.set('Revisa los datos del formulario');
       return;
     }
 
