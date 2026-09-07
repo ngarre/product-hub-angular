@@ -3,6 +3,7 @@ import { ListaProductos } from './lista-productos/lista-productos';
 import { FormularioProducto } from './formulario-producto/formulario-producto';
 import { DetalleProducto } from './detalle-producto/detalle-producto';
 import { PaginaNoEncontrada } from './pagina-no-encontrada/pagina-no-encontrada';
+import { EdicionProducto } from './edicion-producto/edicion-producto';
 
 export const routes: Routes = [
     {
@@ -17,6 +18,10 @@ export const routes: Routes = [
     {
         path: 'nuevo-producto',
         component: FormularioProducto
+    },
+    {
+        path: 'productos/:id/editar',
+        component: EdicionProducto
     },
     {
         path: 'productos/:id',

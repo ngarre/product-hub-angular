@@ -13,12 +13,15 @@ export class ListaProductos implements OnInit {
 
   // ngOnInit is a lifecycle method that Angular calls when it initializes the component.
   // Implementing OnInit helps TS verify that we are correctly implementing that contract.
-  ngOnInit(): void { 
+  ngOnInit(): void {
     this.cargarDesdeApi();
   }
 
   readonly cargando = signal(false); // TS can infer the type from the initial value, so I don't need to write <boolean>
-  readonly errorCarga = signal<string | null>(null)
+  readonly errorCarga = signal<string | null>(null);
+
+  readonly eliminando = signal(false);
+  readonly errorEliminar = signal<string | null>(null);
 
   private readonly productoService = inject(ProductoService);
 
@@ -29,6 +32,31 @@ export class ListaProductos implements OnInit {
 
   eliminarProducto(id: number): void {
     this.productoService.eliminarProducto(id);
+  }
+
+  eliminarProductoDesdeApi(id: number): void {
+    this.eliminando.set(true);
+    this.errorEliminar.set(null);
+
+    const peticion = this.productoService.eliminarProductoApi(id);
+
+    peticion
+      .pipe(
+        finalize(() => {
+          this.eliminando.set(false);
+        }))
+      .subscribe({
+        // This works via scope/closure: the "next" function "remembers" the environment
+        // where it was created and can access the id from the outer method.
+        // The value passed as parameter to the "next" function must be the value emitted by
+        // the Observable, and our "Observable<void> is not emitting an ID"
+        next: () => {this.productoService.eliminarProducto(id)},
+
+        error: error => {
+          console.error('Error al eliminar producto:', error);
+          this.errorEliminar.set('No se pudo eliminar el producto');
+        }
+      });
   }
 
   restablecerProductos(): void {

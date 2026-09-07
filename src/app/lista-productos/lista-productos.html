@@ -19,7 +19,7 @@
 @for (producto of productos(); track producto.id){
 <app-producto
     [producto]="producto" 
-    (eliminado)="eliminarProducto($event)"> <!-- $event contains what the child emitted -->
+    (eliminado)="eliminarProductoDesdeApi($event)"> <!-- $event contains what the child emitted -->
 </app-producto>
 }
 

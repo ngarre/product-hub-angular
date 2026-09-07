@@ -1,0 +1,46 @@
+<form [formGroup]="formularioEdicion" (ngSubmit)="guardarCambios()">
+    <label for="campo-nombre">Nombre:</label>
+    <input id="campo-nombre" type="text" formControlName="nombre">
+
+    <label for="campo-precio">Precio:</label>
+    <input id="campo-precio" type="number" formControlName="precio">
+
+    <button type="submit" [disabled]="formularioEdicion.invalid || recuperandoProducto() || actualizandoProducto() || errorRecuperacion() !== null">
+        Actualizar Producto
+    </button>
+</form>
+
+
+@if(recuperandoProducto()){
+    <p>Recuperando producto...</p>
+}
+
+@if(errorRecuperacion()){
+    <p>Error al recuperar el producto para actualizar</p>
+}
+
+@if(actualizandoProducto()){
+    <p>Actualizando producto...</p>
+}
+
+@if(errorActualizacion()){
+    <p> {{ errorActualizacion() }} </p>
+}
+
+
+@if (
+    formularioEdicion.controls.nombre.touched && 
+    formularioEdicion.controls.nombre.hasError('required') 
+) {
+    <p> El nombre es obligatorio </p>
+}
+
+@if (formularioEdicion.controls.precio.touched) {
+    @if (formularioEdicion.controls.precio.hasError('required')) {
+        <p>El precio es obligatorio</p>
+    }
+
+    @if (formularioEdicion.controls.precio.hasError('min')) {
+    <p>El precio debe ser mayor que cero</p>
+    }
+}

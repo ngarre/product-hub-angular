@@ -2,7 +2,6 @@ import { computed, Injectable, signal, inject } from '@angular/core';
 import { ProductoModel } from '../models/producto.model';
 import { HttpClient } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
-import { BehaviorSubject } from 'rxjs'; // Testing BehaviorSubject vs. signal
 
 interface ProductoApi {
   id: number;
@@ -50,6 +49,60 @@ export class ProductoService {
         }))
   }
 
+  obtenerProductoApiPorId(id: number): Observable<ProductoModel> {
+    return this.http.get<ProductoApi>(`https://fakestoreapi.com/products/${id}`)
+      .pipe(
+        map((productoApi: ProductoApi): ProductoModel => {
+          return {
+            id: productoApi.id,
+            nombre: productoApi.title,
+            precio: productoApi.price
+          };
+        })
+      );
+  }
+
+  crearProductoApi(nombre: string, precio: number): Observable<ProductoModel> {
+    const productoParaApi = {
+      title: nombre,
+      price: precio
+    };
+
+    return this.http.post<ProductoApi>( // <ProductoApi> indicates the data type we expect to receive in the HTTP response, not the type we are sending
+      'https://fakestoreapi.com/products', productoParaApi)
+      .pipe(
+        map((productoApi: ProductoApi): ProductoModel => {
+          return {
+            id: productoApi.id,
+            nombre: productoApi.title,
+            precio: productoApi.price
+          }
+        })
+      );
+  }
+
+  actualizarProductoApi(id: number, nombre: string, precio: number): Observable<ProductoModel> {
+    const productoParaApi = {
+      title: nombre,
+      price: precio
+    };
+
+    return this.http.put<ProductoApi>(`https://fakestoreapi.com/products/${id}`, productoParaApi)
+      .pipe(
+        map((productoApi: ProductoApi): ProductoModel => {
+          return {
+            id: productoApi.id,
+            nombre: productoApi.title,
+            precio: productoApi.price
+          }
+        }
+        )
+      );
+  }
+
+
+  // METHODS FOR THE LOCAL STATE:
+
   eliminarProducto(id: number): void {
     // console.log('Producto a eliminar: ', id);
     // Updating array of products with those ones which button hasn't been clicked
@@ -69,6 +122,10 @@ export class ProductoService {
       [...productos,
         nuevoProducto]
     )
+  }
+
+  eliminarProductoApi(id: number): Observable<void> {
+    return this.http.delete<void>(`https://fakestoreapi.com/products/${id}`);
   }
 
   restablecerProductos(): void {

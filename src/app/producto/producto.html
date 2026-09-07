@@ -1,3 +1,6 @@
 <p>{{ producto().nombre }} - {{ producto().precio }}€</p>
 <button (click)="solicitarEliminacion()">Eliminar</button>
+<br>
 <a [routerLink]="['/productos', producto().id]">Ver detalle</a> <!--In routerLink with array, each element is a segmen: Angular puts "/" between them-->
+<br>
+<a [routerLink]="['/productos', producto().id, 'editar']">Editar</a>

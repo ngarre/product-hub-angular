@@ -1,7 +1,8 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ProductoService } from '../services/producto.service';
 import { Router } from '@angular/router';
+import { finalize } from 'rxjs';
 
 
 @Component({
@@ -15,6 +16,8 @@ export class FormularioProducto {
 
   private readonly productoService = inject(ProductoService);
   private readonly route = inject(Router);
+  readonly creando = signal(false);
+  readonly errorCrear = signal<string | null>(null);
 
   // nombreProducto = new FormControl('');
   // precioProducto = new FormControl(0); // it creates control with initial value in 0
@@ -35,6 +38,8 @@ export class FormularioProducto {
   })
 
   agregarProducto(): void {
+    this.creando.set(true);
+    this.errorCrear.set(null);
 
     // making the code more robust so it doesn't rely solely on the disabled submit button
     if (this.formularioProducto.invalid) {
@@ -44,19 +49,27 @@ export class FormularioProducto {
     // getRawValue() guarantees all form controls are included (without it TS thinks a disabled control could return undefined).
     // With nonNullable controls, nombre is string and precio is number.
 
-    const valores = this.formularioProducto.getRawValue();
+    const { nombre, precio } = this.formularioProducto.getRawValue();
 
-    this.productoService.agregarProducto(
-      valores.nombre,
-      valores.precio
-    );
+    const peticion = this.productoService.crearProductoApi(nombre, precio);
 
-    // Or with destructuring:
-    // const { nombre, precio } = this.formularioProducto.getRawValue();
-    // this.productoService.agregarProducto(nombre, precio);
+    peticion
+      .pipe(finalize(() => {
+        this.creando.set(false);
+      })
+      )
+      .subscribe({
+        next: productoModelCreado => {
+          console.log('Producto creado:', productoModelCreado);
 
-    this.formularioProducto.reset(); // Cleans the form resetting it to its default values
+          this.formularioProducto.reset();
+          this.route.navigate(['/productos']);
+        },
 
-    this.route.navigate(['/productos']);
+        error: error => {
+          console.error('Error al crear producto:', error);
+          this.errorCrear.set('No se pudo crear el producto');
+        }
+      });
   }
 }
