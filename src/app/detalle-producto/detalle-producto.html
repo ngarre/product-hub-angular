@@ -1,10 +1,21 @@
 <h2>Detalle del producto</h2>
 
-@if (producto){
-    <p>{{ producto.nombre }} - {{ producto.precio }}€</p>
+@if (cargando()) {
+<p>Cargando producto...</p>
+} @else if (errorCarga()){
+<p>{{ errorCarga() }}</p>
+} @else if ( productoDeApi(); as producto){
+<p>{{ producto.nombre }} - {{ producto.precio }}€</p>
 } @else {
-    <p>Producto no encontrado</p>
+<p>Producto no encontrado</p>
 }
+
+<!-- Store the current Signal value in a template variable.
+    Angular cannot guarantee that separate calls to productoDeApi()
+     return the same value, so it cannot narrow the type safely.
+     Using "as producto" reads the value once and narrows it to ProductoModel
+     inside this block. -->
+
 
 <br>
 <a routerLink="/productos">Volver a productos</a>

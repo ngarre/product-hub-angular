@@ -1,7 +1,8 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ProductoService } from '../services/producto.service';
 import { ProductoModel } from '../models/producto.model';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-detalle-producto',
@@ -9,35 +10,52 @@ import { ProductoModel } from '../models/producto.model';
   templateUrl: './detalle-producto.html',
   styleUrl: './detalle-producto.css',
 })
-export class DetalleProducto {
+export class DetalleProducto implements OnInit {
+  ngOnInit(): void {
+    this.buscarProductoDesdeApi();
+  }
+
   // ActivatedRoute is a dependency of DetalleProducto because this component needs information about the route where it has been created
   private readonly route = inject(ActivatedRoute);
   private readonly productoService = inject(ProductoService);
 
-  readonly producto = this.buscarProducto();
+  readonly productoDeApi = signal<ProductoModel | undefined>(undefined);
 
+  readonly cargando = signal(false);
+  readonly errorCarga = signal<string | null>(null);
 
-  buscarProducto(): ProductoModel | undefined {
+  buscarProductoDesdeApi(): void {
+    const id = this.route.snapshot.paramMap.get('id');
 
-    const id = this.route.snapshot.paramMap.get('id'); // it can be null or a string
-
-    // If i don't even have an ID, I don't have a product to return either.
-    // When the find method in ProductoService doesn't find a product with the given ID, it returns "undefined"
-    // what we are doing here is ensuring that "undefined" is returned whenever we are unable to retrieve a product
     if (id === null) {
-      // it's possible to simply write "return" because, 
-      // given the function signature (where we specify that it returns "ProductoModel" or "undefined"),
-      // "return" is equivalent to "return undefined".
-
-      return undefined;
+      return;
     }
 
     const idNumerico = Number(id);
 
     if (!Number.isInteger(idNumerico) || idNumerico <= 0) {
-      return undefined; 
+      return;
     }
 
-    return this.productoService.buscarProductoPorId(idNumerico); // It would be "ProductoModel" or "undefined"
+    this.cargando.set(true);
+    this.errorCarga.set(null);
+
+    const peticion = this.productoService.obtenerProductoApiPorId(idNumerico);
+
+    peticion
+      .pipe(
+        finalize(() => {
+          this.cargando.set(false);
+        }))
+      .subscribe({
+        next: (productoModel: ProductoModel) => {
+          this.productoDeApi.set(productoModel);
+        },
+        error: error => {
+          console.error('Error al cargar el producto', error);
+          this.errorCarga.set('No se ha podido recuperar el producto');
+        }
+      });
   }
+
 }
