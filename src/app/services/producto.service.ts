@@ -91,10 +91,6 @@ export class ProductoService {
     ]);
   }
 
-  buscarProductoPorId(id: number): ProductoModel | undefined {
-    return this.productos().find(producto => producto.id === id);
-  }
-
   actualizarProductos(productos: ProductoModel[]): void {
     this.productos.set(productos); // Updates the signal "productos"
   }
