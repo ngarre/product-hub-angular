@@ -14,7 +14,7 @@
     <p>No hay productos disponibles</p>
 }
 
-<button (click)="restablecerProductos()">Restablecer productos</button>
+<button (click)="cargarDesdeApi()">Recargar productos</button>
 
 @for (producto of productos(); track producto.id){
 <app-producto
