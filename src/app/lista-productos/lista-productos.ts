@@ -30,10 +30,6 @@ export class ListaProductos implements OnInit {
   readonly productos = this.productoService.productos;
   readonly numeroProductos = this.productoService.numeroProductos;
 
-  eliminarProducto(id: number): void {
-    this.productoService.eliminarProducto(id);
-  }
-
   eliminarProductoDesdeApi(id: number): void {
     this.eliminando.set(true);
     this.errorEliminar.set(null);
@@ -57,10 +53,6 @@ export class ListaProductos implements OnInit {
           this.errorEliminar.set('No se pudo eliminar el producto');
         }
       });
-  }
-
-  restablecerProductos(): void {
-    this.productoService.restablecerProductos();
   }
 
   cargarDesdeApi(): void {

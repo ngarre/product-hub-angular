@@ -16,18 +16,9 @@ export class ProductoService {
 
   private readonly http = inject(HttpClient);
 
-  // It is private because only ProductoService needs to know this initial list
-  private readonly productosIniciales: ProductoModel[] = [
-    { id: 2, nombre: 'Centrífuga', precio: 2000 },
-    { id: 3, nombre: 'Espectrofotómetro', precio: 3500 },
-    { id: 4, nombre: 'Pipeta', precio: 200 },
-  ]
-
   // With signal "productos" doesn't contain directly the array --> now it has a reactive container which contains the array
   // readonly avoid reassign the property productos to another signal, but the value contained in the signal can change with set() or update()
-  readonly productos = signal<ProductoModel[]>([
-    ...this.productosIniciales
-  ]);
+  readonly productos = signal<ProductoModel[]>([]);
 
   // property numeroProductos is readonly because it can't be reassigned to another signal --> computed internally uses ComputedSignal<number>
   readonly numeroProductos = computed(() => this.productos().length);
@@ -76,6 +67,7 @@ export class ProductoService {
   }
 
 
+  
   // METHODS FOR THE LOCAL STATE:
 
   eliminarProducto(id: number): void {
@@ -83,12 +75,6 @@ export class ProductoService {
     // Updating array of products with those ones which button hasn't been clicked
     this.productos.update(productos => productos.filter(producto => producto.id !== id));
     // We access the array containing the "products" signal using the "update" method
-  }
-
-  restablecerProductos(): void {
-    this.productos.set([
-      ...this.productosIniciales
-    ]);
   }
 
   actualizarProductos(productos: ProductoModel[]): void {
