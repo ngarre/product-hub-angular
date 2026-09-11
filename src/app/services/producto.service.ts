@@ -25,11 +25,7 @@ export class ProductoService {
 
 
   cargarProductosApi(): Observable<ProductoModel[]> {
-    return this.http.get<ProductoApi[]>('https://fakestoreapi.com/products') // "peticion" isn't an array: it is an "Observable<ProductoApi[]"
-      .pipe(
-        map((productosApi: ProductoApi[]): ProductoModel[] => { // "productosApi" is the array emitted by the Observable when the response arrives
-          return productosApi.map(productoApi => this.convertirProductoApi(productoApi));
-        }))
+    return this.http.get<ProductoModel[]>('http://localhost:8080/api/productos');
   }
 
   obtenerProductoApiPorId(id: number): Observable<ProductoModel> {
