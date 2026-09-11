@@ -29,10 +29,7 @@ export class ProductoService {
   }
 
   obtenerProductoApiPorId(id: number): Observable<ProductoModel> {
-    return this.http.get<ProductoApi>(`https://fakestoreapi.com/products/${id}`)
-      .pipe(
-        // After this map the Observable begins to emit ProductoModel instead of ProductoApi 
-        map((productoApi) => this.convertirProductoApi(productoApi)));
+    return this.http.get<ProductoModel>(`http://localhost:8080/api/productos/${id}`)
   }
 
   crearProductoApi(nombre: string, precio: number): Observable<ProductoModel> {
