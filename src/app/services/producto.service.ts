@@ -34,14 +34,12 @@ export class ProductoService {
 
   crearProductoApi(nombre: string, precio: number): Observable<ProductoModel> {
     const productoParaApi = {
-      title: nombre,
-      price: precio
+      nombre,
+      precio
     };
 
-    return this.http.post<ProductoApi>( // <ProductoApi> indicates the data type we expect to receive in the HTTP response, not the type we are sending
-      'https://fakestoreapi.com/products', productoParaApi)
-      .pipe(
-        map(productoApi => this.convertirProductoApi(productoApi)));
+    return this.http.post<ProductoModel>(
+      'http://localhost:8080/api/productos', productoParaApi)
   }
 
   actualizarProductoApi(id: number, nombre: string, precio: number): Observable<ProductoModel> {
@@ -60,7 +58,7 @@ export class ProductoService {
   }
 
 
-  
+
   // METHODS FOR THE LOCAL STATE:
 
   eliminarProducto(id: number): void {
