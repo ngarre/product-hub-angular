@@ -54,7 +54,7 @@ export class ProductoService {
   }
 
   eliminarProductoApi(id: number): Observable<void> {
-    return this.http.delete<void>(`https://fakestoreapi.com/products/${id}`);
+    return this.http.delete<void>(`http://localhost:8080/api/productos/${id}`);
   }
 
 
