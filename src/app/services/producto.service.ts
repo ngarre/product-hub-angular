@@ -25,49 +25,38 @@ export class ProductoService {
 
 
   cargarProductosApi(): Observable<ProductoModel[]> {
-    return this.http.get<ProductoApi[]>('https://fakestoreapi.com/products') // "peticion" isn't an array: it is an "Observable<ProductoApi[]"
-      .pipe(
-        map((productosApi: ProductoApi[]): ProductoModel[] => { // "productosApi" is the array emitted by the Observable when the response arrives
-          return productosApi.map(productoApi => this.convertirProductoApi(productoApi));
-        }))
+    return this.http.get<ProductoModel[]>('http://localhost:8080/api/productos');
   }
 
   obtenerProductoApiPorId(id: number): Observable<ProductoModel> {
-    return this.http.get<ProductoApi>(`https://fakestoreapi.com/products/${id}`)
-      .pipe(
-        // After this map the Observable begins to emit ProductoModel instead of ProductoApi 
-        map((productoApi) => this.convertirProductoApi(productoApi)));
+    return this.http.get<ProductoModel>(`http://localhost:8080/api/productos/${id}`)
   }
 
   crearProductoApi(nombre: string, precio: number): Observable<ProductoModel> {
     const productoParaApi = {
-      title: nombre,
-      price: precio
+      nombre,
+      precio
     };
 
-    return this.http.post<ProductoApi>( // <ProductoApi> indicates the data type we expect to receive in the HTTP response, not the type we are sending
-      'https://fakestoreapi.com/products', productoParaApi)
-      .pipe(
-        map(productoApi => this.convertirProductoApi(productoApi)));
+    return this.http.post<ProductoModel>(
+      'http://localhost:8080/api/productos', productoParaApi)
   }
 
   actualizarProductoApi(id: number, nombre: string, precio: number): Observable<ProductoModel> {
     const productoParaApi = {
-      title: nombre,
-      price: precio
+      nombre,
+      precio
     };
 
-    return this.http.put<ProductoApi>(`https://fakestoreapi.com/products/${id}`, productoParaApi)
-      .pipe(
-        map(productoApi => this.convertirProductoApi(productoApi)));
+    return this.http.put<ProductoModel>(`http://localhost:8080/api/productos/${id}`, productoParaApi)
   }
 
   eliminarProductoApi(id: number): Observable<void> {
-    return this.http.delete<void>(`https://fakestoreapi.com/products/${id}`);
+    return this.http.delete<void>(`http://localhost:8080/api/productos/${id}`);
   }
 
 
-  
+
   // METHODS FOR THE LOCAL STATE:
 
   eliminarProducto(id: number): void {
