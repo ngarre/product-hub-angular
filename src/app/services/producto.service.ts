@@ -44,13 +44,11 @@ export class ProductoService {
 
   actualizarProductoApi(id: number, nombre: string, precio: number): Observable<ProductoModel> {
     const productoParaApi = {
-      title: nombre,
-      price: precio
+      nombre,
+      precio
     };
 
-    return this.http.put<ProductoApi>(`https://fakestoreapi.com/products/${id}`, productoParaApi)
-      .pipe(
-        map(productoApi => this.convertirProductoApi(productoApi)));
+    return this.http.put<ProductoModel>(`http://localhost:8080/api/productos/${id}`, productoParaApi)
   }
 
   eliminarProductoApi(id: number): Observable<void> {
